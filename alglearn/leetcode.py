@@ -163,3 +163,9 @@ def make_question_md(data):
     similarQuestionsZh = similarQuestionsZh,
     )
     return MDSTYLE.format(**data_dict)
+
+
+def farmat_md_source(string: str):
+    """生成ipynb cell source 对应的格式
+    """
+    return string.splitlines(True)

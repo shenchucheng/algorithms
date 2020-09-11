@@ -4,15 +4,15 @@ MDSTYLE = '''
 
 ------
 
-# **中文版**
-## [**{titleZh}**]({url})
+## **中文版**
+### [**{titleZh}**]({url})
 
-**难度：** {difficultyZh}
-**标签：** {topicTagsZh}
-**相似题目：** {similarQuestionsZh}
+- **难度：** {difficultyZh}
+- **标签：** {topicTagsZh}
+- **相似题目：** {similarQuestionsZh}
 
 
-## **题目：**
+### **题目：**
 
 {contentZh}
 
@@ -20,13 +20,14 @@ MDSTYLE = '''
 ------
 
 
-# **English**
-## [**{title}**]({url})
+## **English**
+### [**{title}**]({url})
 
-**Difficulty: ** {difficulty}
-**Topic Tag：** {topicTags}
-**Similar Questions：** {similarQuestions}
-## **Content**
+- **Difficulty:** {difficulty}
+- **Topic Tag:** {topicTags}
+- **Similar Questions:** {similarQuestions}
+
+### **Content**
 
 {content}
 
