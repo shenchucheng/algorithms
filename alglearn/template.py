@@ -13,6 +13,7 @@ from nbformat.v4 import new_markdown_cell, new_code_cell, new_raw_cell, new_note
 from nbformat.v4.nbbase import validate
 
 
+logger = logging.getLogger('leetcode-notebook')
 CELLKTYPE = ['code', 'markdown', 'raw']
 CELLVALID = {
     'cell_type': str,
@@ -68,7 +69,7 @@ def valid(cell):
     if type(cell) is Cell:
        return True 
     else:
-        logging.warning('Element of Cells must be {} not {}'.format(Cell, type(cell)))
+        logger.warning('Element of Cells must be {} not {}'.format(Cell, type(cell)))
         raise TypeError(Cells, Cell, type(cell))
 
 
@@ -105,7 +106,7 @@ class Cell(dict):
     def __setitem__(self, k, v):
         t = cell_valid(k, v)
         if t:
-            logging.warning('Type of {} must be {} not {}'.format(k, t, type(v)))
+            logger.error('Type of {} must be {} not {}'.format(k, t, type(v)))
             raise TypeError(k, t, type(v))
         super().__setitem__(k, v) 
 
@@ -127,26 +128,47 @@ class Notebook:
         if not filename.endswith('.ipynb'):
             filename += '.ipynb'
         self.filename = filename
-        self.pathDir = os.path.join(pathDir, filename)
+        self.pathDir = pathDir
+        self.filepath = os.path.join(pathDir, filename)
         if 'cells' not in kwargs.keys():
             kwargs['cells'] = Cells()
         self.__notebook = new_notebook(**kwargs)
+
     
     @property
     def cells(self):
         return self.__notebook['cells']
 
-    def save(self, filename: str = ''):
+    def save(self, filename: str = '', pathDir: str = '', cover: bool = False):
         """保存成jupyter notebook
 
         Args:
             filename (str, optional): 文件名不存在时默认文件名保存. Defaults to ''.
+            pathDir (str, optional): 保存目录. Defaults to ''.
+            conver (bool, optional): 文件若存在是否覆盖. Defaults to False.
+
+        Returns:
+            [str bool]: 若创建成功返回
         """
         if not filename:
             filename = self.filename
-        with open(filename, mode='w') as f:
-            validate(self.__notebook)
-            json.dump(self.__notebook, f)
+        if not pathDir:
+            pathDir = self.pathDir
+        if not os.path.exists(pathDir):
+            os.makedirs(pathDir)
+        if not filename.endswith('.ipynb'):
+            filename += '.ipynb'
+        filepath = os.path.join(pathDir, filename)
+        if (not cover) and os.path.exists(filepath):
+            warn = 'File "{}" was exists already, '.format(filename)
+            warn += 'if you wan to cover it, please set cover=True.'
+            logger.warning(warn)
+        else:
+            with open(filepath, mode='w') as f:
+                validate(self.__notebook)
+                json.dump(self.__notebook, f)
+                logger.info('Create Notebook {} Successfully.'.format(filename))
+        return filepath
     
     def cell_add(self, cell):
         self.cells.append(cell)

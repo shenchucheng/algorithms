@@ -140,3 +140,5 @@ share
 # static
 static/image/private
 
+# log
+log

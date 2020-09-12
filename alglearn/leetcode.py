@@ -6,15 +6,15 @@
 # DESCRIPTION: 爬取leetcode中国算法题描述
 
 
-import json
+import json, logging
 
 from requests import Session
 from markdownify import markdownify as md
 
 from .tools import HEADERS, UA
-from .config import MDSTYLE
 
 
+logger = logging.getLogger('leetcode-requests')
 GRAPHQLHEADERS = HEADERS.copy()
 GRAPHQLHEADERS.update({
     'Connection': 'keep-alive',
@@ -42,6 +42,10 @@ def leetcode_graphql_querry(data: dict, headers: dict = None) -> dict:
         __headers.update(headers)
     headers = __headers
     resp = session.post(url, data = json_data, headers = headers, timeout = 10)
+    if resp.status_code != 200:
+        info = 'Request-error status_code {}, '.format(resp.status_code)
+        info += 'Url: {}, data: {}'.format(url, json_data)
+        logger.info(info)
     content = resp.json()
     return content
 
@@ -129,7 +133,19 @@ def parse_problem(data):
     return data
 
 
-def make_question_md(data):
+def make_question_md(data, template='') -> str:
+    """根据模板生成leetcode题目的markdown
+
+    Args:
+        data (dict): leetcode题目数据
+        template (str, optional): markdown模板字符串. Defaults to ''.
+
+    Returns:
+        [str]: 生成的markdown文本
+    """
+    if not template:
+        from .config import MDSTYLE
+        template = MDSTYLE
     baseUrl = 'https://leetcode-cn.com/problems/{}/'
     titleSlug = data['titleSlug']
     topicTags = data['topicTags']
@@ -162,7 +178,7 @@ def make_question_md(data):
     similarQuestions   = similarQuestions,
     similarQuestionsZh = similarQuestionsZh,
     )
-    return MDSTYLE.format(**data_dict)
+    return template.format(**data_dict)
 
 
 def farmat_md_source(string: str):

@@ -10,12 +10,16 @@
 
 import os, logging
 
+from .tools import load_logger
 from .leetcode import get_problem_by_url, get_problem_by_slug
 from .leetcode import parse_problem, make_question_md
 from .template import Notebook, Cells, Cell, markdowncell, codecell, rawcell
 
 
-def leetcode_note_book(url: str, filename: str = '', pathDir='./leetcode'):
+def leetcode_notebook(url: str, filename: str = '', pathDir: str = './leetcode',
+    cover = False, logConfig: str = './log.json' ):
+    load_logger(logConfig)
+    logger = logging.getLogger('leetcode-notebook')
     if not os.path.exists(pathDir):
         os.makedirs(pathDir)
     if '/' not in url:
@@ -23,7 +27,6 @@ def leetcode_note_book(url: str, filename: str = '', pathDir='./leetcode'):
         slug = url
     else:
         slug = url.rstrip('/').rsplit('/')[-1]
-        logging.info(slug)
     try:
         data = get_problem_by_slug(slug)
         data = parse_problem(data)
@@ -34,7 +37,6 @@ def leetcode_note_book(url: str, filename: str = '', pathDir='./leetcode'):
         cell = markdowncell()
         cell['source'] = make_question_md(data).splitlines(True)
         book.cells.append(cell)
-        return book.save()
-    except Exception as e:
-        raise e
-        logging.warning(e)
+        book.save(cover=cover)
+    except Exception:
+        logger.error('Failed to Create Leetcode Notebook', exc_info=True)
