@@ -10,6 +10,7 @@ import json, logging
 
 from requests import Session
 from markdownify import markdownify as md
+from typing import List, Dict
 
 from .tools import HEADERS, UA
 
@@ -25,7 +26,7 @@ session = Session()
 session.headers = HEADERS
 
 
-def leetcode_graphql_querry(data: dict, headers: dict = None) -> dict:
+def leetcode_graphql_querry(data: dict, headers: dict = None) -> Dict:
     """leetcode数据库查询
 
     Args:
@@ -80,7 +81,7 @@ def get_problems_slug():
     return leetcode_graphql_querry(data)  # 数据量1700+
 
 
-def get_problem_by_slug(slug: str) -> dict:
+def get_problem_by_slug(slug: str) -> Dict:
     """根据slug 获取对应题目
 
     Args:
@@ -102,11 +103,17 @@ def get_problem_by_slug(slug: str) -> dict:
                     isPaidOnly
                     difficulty
                     similarQuestions
+                    sampleTestCase
                     topicTags {
                         name
                         slug
                         translatedName
                         __typename }
+                    codeSnippets {
+                        lang
+                        langSlug
+                        code                        
+                        __typename}
                    } }
                  '''
     }
@@ -128,8 +135,14 @@ def parse_problem(data):
     data = data['data']['question']
     if type(data['similarQuestions']) == str:
         data['similarQuestions'] = eval(data['similarQuestions'])
-    data['content'] = md(data['content'])
-    data['translatedContent'] = md(data['translatedContent'])
+    data['content'] = leetcodemd(data['content'])
+    data['translatedContent'] = leetcodemd(data['translatedContent'])
+    for code in data['codeSnippets']:
+        if code['lang'] == 'Python3':
+            codes = format_md_source(code['code'])
+            codes.insert(0, 'from typing import List, Dict, Tuple')
+            data['codeSnippets' + code['langSlug']] = codes 
+            break
     return data
 
 
@@ -178,10 +191,22 @@ def make_question_md(data, template='') -> str:
     similarQuestions   = similarQuestions,
     similarQuestionsZh = similarQuestionsZh,
     )
-    return template.format(**data_dict)
+    return format_md_source(template.format(**data_dict))
 
 
-def farmat_md_source(string: str):
+def format_md_source(string: str) -> List:
     """生成ipynb cell source 对应的格式
     """
     return string.splitlines(True)
+
+
+def leetcodemd(html: str) -> str:
+    """将leetcode的html转化成md，完善markdownify库部分解析
+
+    Args:
+        html (str): html源文档
+    """ 
+    string = md(html)
+    string = string.replace('[', '\\[')
+    string = string.replace(']', '\\]')
+    return string 

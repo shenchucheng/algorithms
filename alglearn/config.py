@@ -1,3 +1,10 @@
+#!/usr/bin/env python3
+# -*- coding:UTF-8 -*-
+# AUTHOR: Chucheng Shen
+# DATE: 2020/09/12 Sat
+
+# DESCRIPTION: 题目markdown模板
+
 
 MDSTYLE = '''
 # **{questionId}.**
@@ -40,7 +47,8 @@ MDSTYLE = '''
 - 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 '''
 
-
+'''
+一个leetcode题目链接返回的数据
 {'questionId': '216',
  'title': 'Combination Sum III',
  'titleSlug': 'combination-sum-iii',
@@ -58,3 +66,4 @@ MDSTYLE = '''
    'slug': 'backtracking',
    'translatedName': '回溯算法',
    '__typename': 'TopicTagNode'}]}
+  '''

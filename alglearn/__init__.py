@@ -35,8 +35,13 @@ def leetcode_notebook(url: str, filename: str = '', pathDir: str = './leetcode',
             filename = '{}-leetcode-{}.ipynb'.format(questionId, slug)
         book = Notebook(filename, pathDir)
         cell = markdowncell()
-        cell['source'] = make_question_md(data).splitlines(True)
+        cell['source'] = make_question_md(data)
         book.cells.append(cell)
+        cell = codecell()
+        cell['source'] = data['codeSnippetspython3']
+        # sampleTestCase
+        book.cells.append(cell)
+        book.cells.append(markdowncell())
         book.save(cover=cover)
     except Exception:
         logger.error('Failed to Create Leetcode Notebook', exc_info=True)
