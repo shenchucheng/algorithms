@@ -10,27 +10,78 @@
 
 <!-- 了解了 **ipynb** 内容的格式要求，以及 **Jupyter Notebook** 库，构造**ipynb** 文件生成函数，并用爬虫根据链接爬取 **leetcode** 对应的题目，并转成 **md** 文件，自动插入到 **ipynb** 文件 **cells** 中。 -->
 
-- **功能**
+## **LeetcodeNotebook**
+
+- ### **功能**
   - [x] 自动获取 **leetcode** 题目描述
   - [x] 题目 **html** 文档转 **md**
   - [x] **Notebook** 自动生成
   - [ ] **Notebook** 自动输出 **md**
   - [ ] 算法学习过程分析
 
-- **实现要求**
+- ### **实现要求**
   - 爬虫
   - Html to Markdown
   - jupyter notebok 库
 
-- **效果图**
+- ### **效果图**
   - ![获取leetcode题目](./static/image/get_leetcode_question.gif)
   - ![生成题目notebook](./static/image/generate_question_nootbook.gif)
   - ![](./static/image/markdown_preview.png) 
 
-- 安装及使用
-```shell
-git clone https://github.com/shenchucheng/algorithms
-cd algorithms
-./app.py https://leetcode-cn.com/problems/two-sum/ 
 
+## **安装**
+
+### [**jupyter**](https://github.com/jupyter) **安装**
+
+```shell
+pip install jupyter  # pip安装`
+```
+
+### [**AlgLearn**](https://github.com/shenchucheng/algorithms)安装
+
+#### **git** **获取源码**
+```shell 
+git clone -b v0.1 https://github.com/shenchucheng/algorithms.git
+```
+#### **wget** **获取源码**
+  
+```shell
+wget https://github.com/shenchucheng/algorithms/files/*/algLearn.tar.gz
+# 或者手动在 https://github.com/shenchucheng/algorithms/releases 下载源码解压即可
+tar -xvzf algLearn.tar.gz
+```
+
+#### **安装依赖及测试**
+```shell
+cd algLearn
+pip install -r requirements.txt
+./app.py https://leetcode-cn.com/problems/two-sum/  # 测试获取leetcode题目
+```
+
+#### **Notebook** **自动生成** **Markdown**
+- jupyter notebook 文件是 json 格式，但是可以转化成 markdown 文本
+- jupyter notebook 可通过配置文件 设置 post_save_hook 函数，每次文件保存会触发这个函数，因此每次修改完 leetcode notebook 笔记都会自动保存成 markdown 文件。
+```
+jupyter notebook --generate-config
+
+vim ~/.jupyter/jupyter_notebook_config.py 
+## 加入以下内容
+import os
+from subprocess import check_call
+def post_save(model, os_path, contents_manager):
+    """post-save hook for converting notebooks to .py scripts"""
+    if model['type'] != 'notebook':
+        return # only do this for notebooks
+    d, fname = os.path.split(os_path)
+    if 'leetcode' in d:
+        mddir = os.path.split(d)[0]
+        mddir = os.path.join(mddir, 'md')
+        check_call(['ipython', 'nbconvert', '--to', 'markdown', '--output-dir', mddir, fname], cwd=d)
+c.FileContentsManager.post_save_hook = post_save
+```
+
+#### **启动 Notebook**
+```
+jupyter notebook
 ```

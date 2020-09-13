@@ -16,7 +16,7 @@ from .leetcode import parse_problem, make_question_md
 from .template import Notebook, Cells, Cell, markdowncell, codecell, rawcell
 
 
-def leetcode_notebook(url: str, filename: str = '', pathDir: str = './leetcode',
+def leetcode_notebook(url: str, filename: str = '', pathDir: str = './leetcode/ipynb',
     cover = False, logConfig: str = './log.json' ):
     load_logger(logConfig)
     logger = logging.getLogger('leetcode-notebook')
