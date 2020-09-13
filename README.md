@@ -16,7 +16,7 @@
   - [x] 自动获取 **leetcode** 题目描述
   - [x] 题目 **html** 文档转 **md**
   - [x] **Notebook** 自动生成
-  - [ ] **Notebook** 自动输出 **md**
+  - [x] **Notebook** 自动输出 **md**
   - [ ] 算法学习过程分析
 
 - ### **实现要求**
@@ -83,5 +83,5 @@ c.FileContentsManager.post_save_hook = post_save
 
 #### **启动 Notebook**
 ```
-jupyter notebook
+jupyter notebook 
 ```
