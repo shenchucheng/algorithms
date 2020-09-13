@@ -42,12 +42,12 @@ pip install jupyter  # pip安装`
 
 #### **git** **获取源码**
 ```shell 
-git clone -b v0.1 https://github.com/shenchucheng/algorithms.git
+git clone -b v0.1 --depth=1 https://github.com/shenchucheng/algorithms.git
 ```
 #### **wget** **获取源码**
   
 ```shell
-wget https://github.com/shenchucheng/algorithms/files/*/algLearn.tar.gz
+wget https://github.com/shenchucheng/algorithms/files/5213756/algLearn.tar.gz
 # 或者手动在 https://github.com/shenchucheng/algorithms/releases 下载源码解压即可
 tar -xvzf algLearn.tar.gz
 ```
@@ -57,6 +57,7 @@ tar -xvzf algLearn.tar.gz
 cd algLearn
 pip install -r requirements.txt
 ./app.py https://leetcode-cn.com/problems/two-sum/  # 测试获取leetcode题目
+# 如果因为没有log目录而报错 mkdir log即可
 ```
 
 #### **Notebook** **自动生成** **Markdown**
@@ -84,4 +85,5 @@ c.FileContentsManager.post_save_hook = post_save
 #### **启动 Notebook**
 ```
 jupyter notebook
+# 后面打开leetcode的ipynb文件并保存就会在../md目录下生成对应markdown文件
 ```
