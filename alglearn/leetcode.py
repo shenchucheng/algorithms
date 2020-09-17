@@ -140,7 +140,10 @@ def parse_problem(data):
     for code in data['codeSnippets']:
         if code['lang'] == 'Python3':
             codes = format_md_source(code['code'])
-            codes.insert(0, 'from typing import List, Dict, Tuple')
+            codes.insert(0, 'from typing import List, Dict, Tuple\n')
+            codes.append('\n\n\n\n\n')
+            codes.append('solution = Solution()')
+            codes.append('inp = []')
             data['codeSnippets' + code['langSlug']] = codes 
             break
     return data
