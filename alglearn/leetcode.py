@@ -142,8 +142,8 @@ def parse_problem(data):
             codes = format_md_source(code['code'])
             codes.insert(0, 'from typing import List, Dict, Tuple\n')
             codes.append('\n\n\n\n\n')
-            codes.append('solution = Solution()')
-            codes.append('inp = []')
+            codes.append('solution = Solution()\n')
+            codes.append('inp = []\n')
             data['codeSnippets' + code['langSlug']] = codes 
             break
     return data
