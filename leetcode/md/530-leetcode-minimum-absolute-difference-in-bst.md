@@ -94,10 +94,28 @@ class Solution:
             wrap(root.right)
         wrap(root)
         return mini
-
+    
+class Solution:
+    def getMinimumDifference(self, root: TreeNode) -> int:
+        def wrap(root):
+            if not root:
+                return
+            wrap(root.left)
+            try:
+                val = root.val
+                self.mini = min(self.mini, val - self.pre)
+            except:
+                if hasattr(self, 'pre'):
+                    self.mini = val - self.pre 
+            finally:
+                self.pre = val
+            wrap(root.right)
+        wrap(root)
+        return self.mini
+    
 solution = Solution()
 inp = []
 
 ```
 
-
+![image.png](attachment:41b96ebf-939f-418a-99f6-21ac2a62cf34.png)
